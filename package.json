@@ -1,0 +1,29 @@
+{
+  "name": "@haraprasad45/mcp-unsplash",
+  "version": "1.0.0",
+  "description": "An MCP server to download images from Unsplash.",
+  "main": "build/index.js",
+  "bin": {
+    "@haraprasad45/mcp-unsplash": "build/index.js"
+  },
+  "files": [
+    "build"
+  ],
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc && node -e \"require('fs').chmodSync('build/index.js', '755')\""
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "latest",
+    "axios": "latest",
+    "zod": "latest"
+  },
+  "devDependencies": {
+    "@types/node": "latest",
+    "typescript": "latest"
+  },
+  "type": "module"
+}
