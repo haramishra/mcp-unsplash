@@ -27,6 +27,10 @@ server.tool(
   "download_unsplash_images",
   {
     query: z.string().describe("Search query for images"),
+    orientation: z
+      .enum(["vertical", "horizontal"])
+      .optional()
+      .describe("Image orientation (vertical or horizontal)"),
     count: z
       .number()
       .min(1)
@@ -49,13 +53,21 @@ server.tool(
     count = 5,
     download_path = "/Users/hp/Downloads",
     filename,
+    orientation,
   }) => {
     try {
+      const randomPage = Math.floor(Math.random() * 20) + 1;
+      const params: any = {
+        query,
+        per_page: count,
+        page: randomPage,
+      };
+      if (orientation) {
+        params.orientation =
+          orientation === "vertical" ? "portrait" : "landscape";
+      }
       const response = await unsplashApi.get("/search/photos", {
-        params: {
-          query,
-          per_page: count,
-        },
+        params,
       });
 
       const images = response.data.results;
@@ -73,11 +85,9 @@ server.tool(
         let imageName;
         if (filename) {
           const name = filename.replace(/\.[^/.]+$/, ""); // remove extension if present
-          imageName = count > 1 ? `${name}-${index + 1}.jpg` : `${name}.jpg`;
+          imageName = `${slugify(name)}-${image.id}.jpg`;
         } else {
-          const description =
-            image.alt_description || image.description || query || image.id;
-          imageName = `${slugify(description)}.jpg`;
+          imageName = `${slugify(query)}-${image.id}.jpg`;
         }
 
         if (!fs.existsSync(download_path)) {
