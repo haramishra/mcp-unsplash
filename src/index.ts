@@ -28,15 +28,15 @@ server.tool(
   {
     query: z.string().describe("Search query for images"),
     orientation: z
-      .enum(["vertical", "horizontal"])
+      .enum(["vertical", "horizontal", "squarish"])
       .optional()
       .describe("Image orientation (vertical or horizontal)"),
     count: z
       .number()
       .min(1)
-      .max(10)
+      .max(50)
       .optional()
-      .describe("Number of images to download (1-10)"),
+      .describe("Number of images to download (1-50)"),
     download_path: z
       .string()
       .optional()
@@ -64,7 +64,11 @@ server.tool(
       };
       if (orientation) {
         params.orientation =
-          orientation === "vertical" ? "portrait" : "landscape";
+          orientation === "vertical"
+            ? "portrait"
+            : orientation === "horizontal"
+            ? "landscape"
+            : "squarish";
       }
       const response = await unsplashApi.get("/search/photos", {
         params,
